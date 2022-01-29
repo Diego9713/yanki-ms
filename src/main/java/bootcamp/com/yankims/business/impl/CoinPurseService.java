@@ -62,8 +62,12 @@ public class CoinPurseService implements ICoinPurseService {
   @Override
   @Transactional
   public Mono<CoinPurseDto> createCoinPurse(CoinPurseDto coinPurseDto) {
+    log.info("Save Coin purse >>>");
     return coinPurseRepository
-      .findByPhoneNumberOrPhoneImeiOrDocumentNumber(coinPurseDto.getPhoneNumber(), coinPurseDto.getPhoneImei(), coinPurseDto.getDocumentNumber())
+      .findByPhoneNumberOrPhoneImeiAndDocumentNumberOrAccountNumber(coinPurseDto.getPhoneNumber(),
+        coinPurseDto.getPhoneImei(),
+        coinPurseDto.getDocumentNumber(),
+        coinPurseDto.getAccountNumber())
       .switchIfEmpty(Mono.just(new CoinPurse()))
       .filter(coinPurse -> coinPurse.getId() == null)
       .flatMap(coinPurse ->  filterCoinPurse.createObjectCoinPurse(coinPurseDto))
@@ -83,6 +87,7 @@ public class CoinPurseService implements ICoinPurseService {
   @Override
   @Transactional
   public Mono<CoinPurseDto> updateCoinPurse(CoinPurseDto coinPurseDto, String id) {
+    log.info("Update Coin purse >>>");
     return coinPurseRepository.findById(id)
       .switchIfEmpty(Mono.empty())
       .flatMap(coinPurse -> filterCoinPurse.updateObjectCoinPurse(coinPurseDto, coinPurse))
@@ -100,9 +105,11 @@ public class CoinPurseService implements ICoinPurseService {
   @Override
   @Transactional
   public Mono<CoinPurseDto> deleteCoinPurse(String id) {
+    log.info("Delete Coin purse >>>");
     return coinPurseRepository.findById(id)
       .switchIfEmpty(Mono.empty())
       .flatMap(filterCoinPurse::deleteObjectCoinPurse)
+      .flatMap(coinPurseRepository::save)
       .map(AppUtil::entityToCoinPurse);
   }
 }

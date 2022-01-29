@@ -8,6 +8,9 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface ICoinPurseRepository extends ReactiveMongoRepository<CoinPurse, String> {
 
-  Mono<CoinPurse> findByPhoneNumberOrPhoneImeiOrDocumentNumber(String phone,String phoneImei,String document);
+  Mono<CoinPurse> findByPhoneNumberOrPhoneImeiAndDocumentNumberOrAccountNumber(String phone,
+                                                                               String phoneImei,
+                                                                               String documentNumber,
+                                                                               String accountNumber);
 
 }

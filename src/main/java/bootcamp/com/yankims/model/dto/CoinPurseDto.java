@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CoinPurseDto{
-
+public class CoinPurseDto {
   private String id;
   private String documentType;
   private String documentNumber;

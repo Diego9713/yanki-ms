@@ -5,6 +5,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ICoinPurseService {
+
   Flux<CoinPurseDto> findAllCoinPurse();
 
   Mono<CoinPurseDto> findOneCoinPurse(String id);
