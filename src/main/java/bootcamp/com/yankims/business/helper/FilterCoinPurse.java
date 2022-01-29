@@ -28,7 +28,7 @@ public class FilterCoinPurse {
   public Mono<CoinPurseDto> createObjectCoinPurse(CoinPurseDto coinPurseDto) {
     Mono<CoinPurseDto> newCoinPurse;
     if (coinPurseDto.getCoinPurseType().equalsIgnoreCase(ConstantCoinType.COIN_PURSE_CARD.name())
-      && coinPurseDto.getAccountNumber() != null) {
+        && coinPurseDto.getAccountNumber() != null) {
       Flux<ProductDto> productDtoFlux = webClientProductHelper.findProductAccount(coinPurseDto.getAccountNumber());
       Mono<List<ProductDto>> listMono = productDtoFlux.collectList();
       newCoinPurse = listMono.flatMap(productDtos -> searchProductAccount(productDtos, coinPurseDto));
@@ -77,8 +77,8 @@ public class FilterCoinPurse {
     Mono<CoinPurseDto> coinPurseDtoMono = Mono.just(new CoinPurseDto());
     for (ProductDto productDto : productDtos) {
       if (productDto.getLevel() == 1
-        && Arrays.stream(ConstantsProducts.values())
-        .anyMatch(constantsProducts -> constantsProducts.toString()
+          && Arrays.stream(ConstantsProducts.values())
+          .anyMatch(constantsProducts -> constantsProducts.toString()
           .equalsIgnoreCase(productDto.getAccountType()))) {
         coinPurseDto.setAccountNumber(productDto.getSubAccountNumber());
         coinPurseDto.setAmount(productDto.getAmount());

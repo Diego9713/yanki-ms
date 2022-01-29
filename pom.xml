@@ -64,10 +64,6 @@
 			<artifactId>spring-cloud-starter-bootstrap</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
 		</dependency>
@@ -98,11 +94,7 @@
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>mockwebserver</artifactId>
@@ -222,6 +214,7 @@
 						<exclude>com/nttdata/bootcamp/*/model/thirdparty/**/*</exclude>
 						<exclude>**/utils/*</exclude>
 						<exclude>**/config/*</exclude>
+						<exclude>**/model/dto/*</exclude>
 						<exclude>**/business/helper/*</exclude>
 					</excludes>
 				</configuration>
@@ -289,6 +282,7 @@
 						<exclude>com/tdp/ms/*/eventflow/**/*</exclude>
 						<exclude>**/utils/*</exclude>
 						<exclude>**/config/*</exclude>
+						<exclude>**/model/dto/*</exclude>
 						<exclude>**/business/helper/*</exclude>
 					</excludes>
 				</configuration>
