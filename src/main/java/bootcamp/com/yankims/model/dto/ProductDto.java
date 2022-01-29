@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductDto{
+public class ProductDto {
   private String id;
   private String accountType;
   private String accountNumber;
