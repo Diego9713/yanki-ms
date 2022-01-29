@@ -4,17 +4,24 @@ spring:
   cloud:
     config:
       enabled: true
-      #uri: http://52.191.98.85:8001
-      #uri: http://localhost:8001
+      #uri: http://20.84.15.129:8001
       uri: http://localhost:8001
+      #uri: http://192.168.1.18:8001
       username: root
       password: s3cr3t
   kafka:
     consumer:
-      bootstrap-servers: localhost:9092
-      group-id: tbp
+      bootstrap-servers: http://192.168.1.18:9092
+      #bootstrap-servers: localhost:9092
+      #group-id: tbp
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      client-id: example
 kafka:
   topic: quickstart-events
+api:
+  gateway:
+    #uri: http://20.127.248.66:8081
+    uri: http://localhost:8081
+    #uri: http://192.168.1.18:8081

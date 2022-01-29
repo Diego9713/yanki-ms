@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class KafkaEventListener {
 
-  @KafkaListener(topics = "${kafka.topic}")
+  @KafkaListener(topics = "${kafka.topic}", groupId = "group_id")
   public void listen(Message<String> message) {
     String payload = message.getPayload();
-    log.info(payload);
+    log.debug("Message ->>>>", payload);
 
   }
 }
