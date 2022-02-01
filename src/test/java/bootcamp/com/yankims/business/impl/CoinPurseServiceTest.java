@@ -137,4 +137,12 @@ class CoinPurseServiceTest {
       .expectNext(coinPurseDto)
       .expectComplete();
   }
+
+  @Test
+  void findTransactionPending() {
+  }
+
+  @Test
+  void confirmBuyCoinsTransaction() {
+  }
 }

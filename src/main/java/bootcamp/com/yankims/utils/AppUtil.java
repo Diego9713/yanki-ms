@@ -32,4 +32,13 @@ public class AppUtil {
     BeanUtils.copyProperties(coinPurseDto, coinPurse);
     return coinPurse;
   }
+
+  /**
+   * Method to convert String in double.
+   *
+   * @return a double object amount.
+   */
+  public static double convertStringToDouble(String amount) {
+    return Double.parseDouble(amount);
+  }
 }

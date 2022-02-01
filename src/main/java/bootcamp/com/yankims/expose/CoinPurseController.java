@@ -2,6 +2,7 @@ package bootcamp.com.yankims.expose;
 
 import bootcamp.com.yankims.business.ICoinPurseService;
 import bootcamp.com.yankims.model.dto.CoinPurseDto;
+import bootcamp.com.yankims.model.dto.TransactionDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,6 +49,32 @@ public class CoinPurseController {
   }
 
   /**
+   * Method to search one Transaction for id.
+   *
+   * @param id -> identify unique of Transaction.
+   * @return object type Transaction.
+   */
+  @CircuitBreaker(name = "getCoinTransactionCB", fallbackMethod = "fallBackGetCoinTransaction")
+  @GetMapping("/status/transactions/{TransactionId}")
+  public Flux<TransactionDto> findTransactionPending(@PathVariable("TransactionId") String id) {
+    return coinPurseService.findTransactionPending(id);
+  }
+
+  /**
+   * Method to Confirm buy bootCoins transaction.
+   *
+   * @param transactionDto -> Transaction pending.
+   * @return message type string odf confirmed.
+   */
+  @CircuitBreaker(name = "postCoinTransactionCB", fallbackMethod = "fallBackPostCoinTransaction")
+  @PostMapping("/confirm/transactions")
+  public Mono<ResponseEntity<TransactionDto>> findTransactionPending(@RequestBody TransactionDto transactionDto) {
+    return coinPurseService.confirmBuyCoinsTransaction(transactionDto)
+      .flatMap(c -> Mono.just(ResponseEntity.ok().body(c)))
+      .switchIfEmpty(Mono.just(ResponseEntity.badRequest().build()));
+  }
+
+  /**
    * Method to save coin purse.
    *
    * @param coinPurseDto -> object to save coin purse.
@@ -68,6 +95,7 @@ public class CoinPurseController {
    * @param id           -> identify unique of coin purse.
    * @return object update coin purse.
    */
+  @CircuitBreaker(name = "putCoinPurseCB", fallbackMethod = "fallBackPutCoinPurse")
   @PutMapping("/{id}")
   public Mono<ResponseEntity<CoinPurseDto>> updateCoinPurse(@RequestBody CoinPurseDto coinPurseDto,
                                                             @PathVariable String id) {
@@ -92,13 +120,52 @@ public class CoinPurseController {
   /**
    * Method CircuitBreaker to save coin purse.
    *
+   * @param id -> Identified Transaction.
+   * @param ex           -> this is exception error.
+   * @return exception error.
+   */
+  public Flux<String> fallBackGetCoinTransaction(@PathVariable("TransactionId") String id,
+                                                            RuntimeException ex) {
+    return Flux.just("Microservice Transaction not found with: " + id);
+  }
+  /**
+   * Method CircuitBreaker to update Transaction.
+   *
+   * @param transactionDto -> object to update transaction.
+   * @param ex           -> this is exception error.
+   * @return exception error.
+   */
+
+  public Mono<ResponseEntity<String>> fallBackPostCoinTransaction(@RequestBody TransactionDto transactionDto,
+                                                            RuntimeException ex) {
+    return Mono.just(ResponseEntity.ok().body("Microservice Transaction not found. " + transactionDto.getProductId()));
+  }
+
+  /**
+   * Method CircuitBreaker to save coin purse.
+   *
    * @param coinPurseDto -> object to save coin purse.
    * @param ex           -> this is exception error.
    * @return exception error.
    */
   public Mono<ResponseEntity<String>> fallBackPostCoinPurse(@RequestBody CoinPurseDto coinPurseDto,
-                                                                   RuntimeException ex) {
+                                                            RuntimeException ex) {
     return Mono.just(ResponseEntity.ok().body("Microservice product not found.Coin Purse for number "
       + coinPurseDto.getPhoneNumber() + " error save."));
+  }
+
+  /**
+   * Method CircuitBreaker to update coin purse.
+   *
+   * @param coinPurseDto -> object to update coin purse.
+   * @param ex           -> this is exception error.
+   * @return exception error.
+   */
+  public Mono<ResponseEntity<String>> fallBackPutCoinPurse(@RequestBody CoinPurseDto coinPurseDto,
+                                                           @PathVariable String id,
+                                                           RuntimeException ex) {
+    return Mono.just(ResponseEntity.ok().body("Microservice product not found for id: " + id
+      + " and Coin Purse for number: "
+      + coinPurseDto.getPhoneNumber() + " error update."));
   }
 }
