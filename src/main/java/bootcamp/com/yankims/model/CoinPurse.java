@@ -34,6 +34,8 @@ public class CoinPurse {
   private String accountNumber;
   @Field(name = "amount")
   private double amount;
+  @Field(name = "boot_coin")
+  private double bootCoin = 0;
   @Field(name = "status")
   private String status;
 }

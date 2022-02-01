@@ -3,18 +3,28 @@ package bootcamp.com.yankims.business.helper;
 import bootcamp.com.yankims.model.CoinPurse;
 import bootcamp.com.yankims.model.dto.CoinPurseDto;
 import bootcamp.com.yankims.model.dto.ProductDto;
+import bootcamp.com.yankims.model.dto.TransactionDto;
+import bootcamp.com.yankims.utils.AppUtil;
 import bootcamp.com.yankims.utils.ConstantCoinType;
 import bootcamp.com.yankims.utils.ConstantStatus;
 import bootcamp.com.yankims.utils.ConstantsProducts;
+import bootcamp.com.yankims.utils.ConstantsTransacStatus;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
 public class FilterCoinPurse {
+
+  @Value("${rate.buy}")
+  private String rateBuy;
+
+  @Value("${rate.sell}")
+  private String rateSell;
 
   @Autowired
   private WebClientProductHelper webClientProductHelper;
@@ -34,9 +44,20 @@ public class FilterCoinPurse {
       newCoinPurse = listMono.flatMap(productDtos -> searchProductAccount(productDtos, coinPurseDto));
     } else {
       coinPurseDto.setAccountNumber(null);
-      newCoinPurse = Mono.just(coinPurseDto);
+      CoinPurseDto purseDto = assignBootCoins(rateBuy, coinPurseDto);
+      newCoinPurse = Mono.just(purseDto);
     }
     return newCoinPurse;
+  }
+
+  private CoinPurseDto assignBootCoins(String rateBuy, CoinPurseDto coinPurseDto) {
+    double buy = AppUtil.convertStringToDouble(rateBuy);
+    if (coinPurseDto.getAmount() > 0) {
+      coinPurseDto.setBootCoin(coinPurseDto.getAmount() / buy);
+    } else {
+      coinPurseDto.setBootCoin(0);
+    }
+    return coinPurseDto;
   }
 
   /**
@@ -82,11 +103,23 @@ public class FilterCoinPurse {
           .equalsIgnoreCase(productDto.getAccountType()))) {
         coinPurseDto.setAccountNumber(productDto.getSubAccountNumber());
         coinPurseDto.setAmount(productDto.getAmount());
-        coinPurseDtoMono = Mono.just(coinPurseDto);
+        CoinPurseDto purseDto = assignBootCoins(rateBuy, coinPurseDto);
+        coinPurseDtoMono = Mono.just(purseDto);
         break;
       }
     }
     return coinPurseDtoMono;
+  }
+
+  /**
+   * Method to confirm Transaction for buy bootCoins.
+   *
+   * @param transactionDto -> object transaction confirmed.
+   * @return check complete transaction.
+   */
+  public TransactionDto confirmTransaction(TransactionDto transactionDto) {
+    transactionDto.setStatus(ConstantsTransacStatus.COMPLETE.name());
+    return transactionDto;
   }
 
 }

@@ -2,8 +2,10 @@ package bootcamp.com.yankims.business.impl;
 
 import bootcamp.com.yankims.business.ICoinPurseService;
 import bootcamp.com.yankims.business.helper.FilterCoinPurse;
+import bootcamp.com.yankims.business.helper.WebClientTransactionHelper;
 import bootcamp.com.yankims.model.CoinPurse;
 import bootcamp.com.yankims.model.dto.CoinPurseDto;
+import bootcamp.com.yankims.model.dto.TransactionDto;
 import bootcamp.com.yankims.repository.ICoinPurseRepository;
 import bootcamp.com.yankims.utils.AppUtil;
 import bootcamp.com.yankims.utils.ConstantStatus;
@@ -20,9 +22,12 @@ public class CoinPurseService implements ICoinPurseService {
 
   @Autowired
   private ICoinPurseRepository coinPurseRepository;
+
   @Autowired
   private FilterCoinPurse filterCoinPurse;
 
+  @Autowired
+  private WebClientTransactionHelper webClientTransactionHelper;
 
   /**
    * Method to search all coin purse.
@@ -36,6 +41,32 @@ public class CoinPurseService implements ICoinPurseService {
     return coinPurseRepository.findAll()
       .filter(coinPurse -> coinPurse.getStatus().equalsIgnoreCase(ConstantStatus.ACTIVE.name()))
       .map(AppUtil::entityToCoinPurse);
+  }
+
+  /**
+   * Method to search one Transaction for id.
+   *
+   * @param id -> identify unique of Transaction.
+   * @return object type Transaction.
+   */
+  @Override
+  @Transactional(readOnly = true)
+  public Flux<TransactionDto> findTransactionPending(String id) {
+    log.info("findAll Transaction status pending>>>");
+    return webClientTransactionHelper.findTransactionIdPending(id);
+  }
+
+  /**
+   * Method to Confirm buy bootCoins transaction
+   *
+   * @param transactionDto -> Transaction pending.
+   * @return message type string odf confirmed.
+   */
+  @Override
+  @Transactional
+  public Mono<TransactionDto> confirmBuyCoinsTransaction(TransactionDto transactionDto) {
+    TransactionDto transaction = filterCoinPurse.confirmTransaction(transactionDto);
+    return webClientTransactionHelper.updateTransaction(transaction);
   }
 
   /**

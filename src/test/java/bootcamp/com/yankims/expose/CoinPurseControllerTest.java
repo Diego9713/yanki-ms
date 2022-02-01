@@ -135,4 +135,24 @@ class CoinPurseControllerTest {
   void fallBackPostCoinPurse() {
     Assertions.assertNotNull(coinPurseController.fallBackPostCoinPurse(coinPurseDto, new RuntimeException("")));
   }
+
+  @Test
+  void findTransactionPending() {
+  }
+
+  @Test
+  void testFindTransactionPending() {
+  }
+
+  @Test
+  void fallBackGetCoinTransaction() {
+  }
+
+  @Test
+  void fallBackPostCoinTransaction() {
+  }
+
+  @Test
+  void fallBackPutCoinPurse() {
+  }
 }

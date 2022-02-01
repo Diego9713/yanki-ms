@@ -19,5 +19,6 @@ public class CoinPurseDto {
   private String email;
   private String accountNumber;
   private double amount;
+  private double bootCoin = 0;
   private String status;
 }
